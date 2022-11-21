@@ -1,6 +1,7 @@
 import { Emitter } from '@lib/common/emitter/emitter';
 import { Browser } from '@lib/internal-scraping/puppeteer/browser';
 import { Page } from 'puppeteer';
+import puppeteer from 'puppeteer';
 import { InstargramLogin } from './login';
 
 export interface LoginParams {
@@ -16,7 +17,9 @@ export class InstargramLoginPage {
   public start = async () => {
     // this.emitter.emit('processing', '로그인 시작');
 
-    const page: Page = await this.browser.createBrowser();
+    // const page: Page = await this.browser.createBrowser();
+    const browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
 
     const login: LoginParams = {
       id: process.env.ID,

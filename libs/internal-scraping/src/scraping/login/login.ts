@@ -20,6 +20,9 @@ export class InstargramLogin extends PageAction {
 
   public async doLogin() {
     await this.page.goto(this.mainUrl);
+    await this.waitForSelector(
+      '#loginForm > div > div:nth-child(1) > div > label > input',
+    );
     await this.inputKeyword(
       '#loginForm > div > div:nth-child(1) > div > label > input',
       this.id,
@@ -28,7 +31,7 @@ export class InstargramLogin extends PageAction {
       '#loginForm > div > div:nth-child(2) > div > label > input',
       this.pw,
     );
-    await this.click('#loginForm > div > div:nth-child(3)');
+    await this.click('#loginForm > div > div:nth-child(3) > button');
     await this.page.waitForNavigation({ waitUntil: 'networkidle2' });
     const isError = await this.findElement('#slfErrorAlert');
     if (isError) {

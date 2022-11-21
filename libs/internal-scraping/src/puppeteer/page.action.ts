@@ -1,7 +1,7 @@
 import { Page } from 'puppeteer';
 import { Protocol } from 'devtools-protocol';
 import { LoggerFactory } from '@lib/common/logger/logger.factory';
-import { Logger } from '@nestjs/common';
+import { Logger } from 'tslog';
 
 interface WaitingForType {
   visible?: boolean;

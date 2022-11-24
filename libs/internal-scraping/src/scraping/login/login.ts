@@ -32,10 +32,17 @@ export class InstargramLogin extends PageAction {
       this.pw,
     );
     await this.click('#loginForm > div > div:nth-child(3) > button');
+
     await this.page.waitForNavigation({ waitUntil: 'networkidle2' });
+
     const isError = await this.findElement('#slfErrorAlert');
+
     if (isError) {
       throw new Error('ID,PW를 확인해주세요.');
     }
+  }
+
+  public async loadCookies() {
+    return this.getCookies();
   }
 }

@@ -3,6 +3,8 @@ import { Browser } from '@lib/internal-scraping/puppeteer/browser';
 import { Page } from 'puppeteer';
 import puppeteer from 'puppeteer';
 import { InstargramLogin } from './login';
+import { CookieHelper } from '@lib/common/cookie/cookie-helper';
+import { InstargramScraping } from '../scraping/scraping';
 
 export interface LoginParams {
   id: string;
@@ -10,8 +12,8 @@ export interface LoginParams {
 }
 
 export class InstargramLoginPage {
-  private readonly browser: Browser;
   private instargramLogin: InstargramLogin;
+  private instargramScraping: InstargramScraping;
   // private readonly emitter: Emitter = new Emitter();
 
   public start = async () => {
@@ -35,7 +37,16 @@ export class InstargramLoginPage {
         await this.instargramLogin.doLogin();
       }
     } catch (error) {
+      //TODO 에러 메시지 보내기 추가
       throw error;
     }
+
+    const cookies = await this.instargramLogin.loadCookies();
+    const requestCookie = CookieHelper.toRequestCookieFromPuppeteer(cookies);
+
+    this.instargramScraping = new InstargramScraping();
+
+    const res = await this.instargramScraping.doScraping(requestCookie);
+    return;
   };
 }

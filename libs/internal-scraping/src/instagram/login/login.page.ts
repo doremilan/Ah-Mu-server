@@ -1,6 +1,5 @@
-import { Emitter } from '@lib/common/emitter/emitter';
+import { CookieHelper } from '@lib/common/cookie/cookie-helper';
 import { Browser } from '@lib/internal-scraping/puppeteer/browser';
-import { Page } from 'puppeteer';
 import puppeteer from 'puppeteer';
 import { InstargramLogin } from './login';
 
@@ -11,19 +10,17 @@ export interface LoginParams {
 
 export class InstargramLoginPage {
   private readonly browser: Browser;
+  private readonly id = process.env.ID;
+  private readonly pw = process.env.PW;
   private instargramLogin: InstargramLogin;
-  // private readonly emitter: Emitter = new Emitter();
 
   public start = async () => {
-    // this.emitter.emit('processing', '로그인 시작');
-
-    // const page: Page = await this.browser.createBrowser();
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
 
     const login: LoginParams = {
-      id: process.env.ID,
-      pw: process.env.PW,
+      id: this.id,
+      pw: this.pw,
     };
 
     this.instargramLogin = new InstargramLogin(page, login);
@@ -35,7 +32,12 @@ export class InstargramLoginPage {
         await this.instargramLogin.doLogin();
       }
     } catch (error) {
-      throw error;
+      throw new Error('로그인 요청에 실패했습니다.');
     }
+
+    const cookies = await this.instargramLogin.loadCookies();
+    const requestCookie = CookieHelper.toRequestCookieFromPuppeteer(cookies);
+
+    return requestCookie;
   };
 }

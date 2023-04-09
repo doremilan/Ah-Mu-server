@@ -1,25 +1,58 @@
 import { LoggerFactory } from '@lib/common/logger/logger.factory';
-import { InstargramLoginPage } from '../scraping/login/login.page';
+import { ProducerTypeEnum } from '@lib/common/type/types';
+import { InstargramLoginPage } from '../instagram/login/login.page';
+import { InstagramPostScraping } from '../instagram/post/post-scraping';
+
 import { Executor } from './executor';
 
-export class PageExecutor implements Executor<null> {
+export interface Processed {
+  producer: string;
+  data: any;
+}
+
+export class PageExecutor implements Executor<Processed[]> {
   private readonly logger = LoggerFactory.getInstance();
   private readonly instargramLoginpage: InstargramLoginPage;
+  private readonly instagramPostScraping: InstagramPostScraping;
 
-  constructor(instargramLoginpage: InstargramLoginPage) {
+  constructor(
+    instargramLoginpage: InstargramLoginPage,
+    instagramPostScraping: InstagramPostScraping,
+  ) {
     this.instargramLoginpage = instargramLoginpage;
+    this.instagramPostScraping = instagramPostScraping;
   }
 
-  public async execute(): Promise<null> {
+  public async execute(): Promise<Processed[]> {
+    const producers = [
+      ProducerTypeEnum.OD_COMPANY,
+      // ProducerTypeEnum.CJ_ENM,
+      // ProducerTypeEnum.EMK_MUSICAL_COMPANY,
+      // ProducerTypeEnum.MUSIC_OF_THE_NIGHT,
+      // ProducerTypeEnum.ORCHARD_MUSICAL,
+      // ProducerTypeEnum.SEENSEE_COMPANY,
+      // ProducerTypeEnum.SHOW_NOTE,
+    ];
     try {
-      await this.instargramLoginpage.start();
-      return;
-    } catch (ex) {
-      console.log(ex);
-    }
-  }
+      const results = [];
+      const cookies = await this.instargramLoginpage.start();
 
-  public close(): Promise<null> {
-    return null;
+      for (const producer of producers) {
+        const data = await this.instagramPostScraping.doScraping(
+          producer,
+          cookies,
+        );
+
+        const result = {
+          producer,
+          data,
+        };
+        results.push(result);
+      }
+
+      return results;
+    } catch (ex) {
+      this.logger.error(ex);
+    }
   }
 }

@@ -4,7 +4,8 @@ import { LoggerFactory } from '@lib/common/logger/logger.factory';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
 import { InternalScrapingModule } from '@lib/internal-scraping';
-import { InstargramLoginPage } from '@lib/internal-scraping/scraping/login/login.page';
+import { InstargramLoginPage } from '@lib/internal-scraping/instagram/login/login.page';
+import { InstagramPostScraping } from '@lib/internal-scraping/instagram/post/post-scraping';
 
 jest.setTimeout(1000 * 60 * 60);
 
@@ -25,8 +26,10 @@ describe('Instargram scraping test', () => {
   });
 
   it('로그인 테스트 브라우저 방식', async () => {
-    const executor = new PageExecutor(new InstargramLoginPage());
+    const executor = new PageExecutor(
+      new InstargramLoginPage(),
+      new InstagramPostScraping(),
+    );
     const res = await executor.execute();
-    console.log(res);
   });
 });

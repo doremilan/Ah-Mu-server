@@ -1,4 +1,4 @@
-import { CookieHelper } from '@lib/common/cookie/cookie-helper';
+import { CookieHelper } from '@lib/common/utils/cookie-helper';
 import { Browser } from '@lib/internal-scraping/puppeteer/browser';
 import puppeteer from 'puppeteer';
 import { InstargramLogin } from './login';
@@ -14,7 +14,7 @@ export class InstargramLoginPage {
   private readonly pw = process.env.PW;
   private instargramLogin: InstargramLogin;
 
-  public start = async () => {
+  public login = async () => {
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
 

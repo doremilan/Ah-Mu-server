@@ -1,56 +1,54 @@
 import { LoggerFactory } from '@lib/common/logger/logger.factory';
 import { ProducerTypeEnum } from '@lib/common/type/types';
-import { InstargramLoginPage } from '../instagram/login/login.page';
-import { InstagramPostScraping } from '../instagram/post/post-scraping';
+import { InstargramLoginPage } from '../scraping/login/login.page';
+import { InstargramApiRequest } from '../requester/instagram-page-requester';
 
 import { Executor } from './executor';
+import { OdCompanyParser } from '../parser/instagram/od-company-parser';
+import { PostScrapingData } from '../parser/interface/product-parser';
 
-export interface Processed {
-  producer: string;
-  data: any;
-}
-
-export class PageExecutor implements Executor<Processed[]> {
+export class PageExecutor implements Executor<PostScrapingData> {
   private readonly logger = LoggerFactory.getInstance();
+  private readonly producer: ProducerTypeEnum;
   private readonly instargramLoginpage: InstargramLoginPage;
-  private readonly instagramPostScraping: InstagramPostScraping;
+  private readonly instargramApiRequest: InstargramApiRequest;
+  private readonly odCompanyParser: OdCompanyParser;
 
   constructor(
     instargramLoginpage: InstargramLoginPage,
-    instagramPostScraping: InstagramPostScraping,
+    instargramApiRequest: InstargramApiRequest,
+    odCompanyParser: OdCompanyParser,
+    producer: ProducerTypeEnum,
   ) {
     this.instargramLoginpage = instargramLoginpage;
-    this.instagramPostScraping = instagramPostScraping;
+    this.instargramApiRequest = instargramApiRequest;
+    this.odCompanyParser = odCompanyParser;
+    this.producer = producer;
   }
 
-  public async execute(): Promise<Processed[]> {
-    const producers = [
-      ProducerTypeEnum.OD_COMPANY,
-      // ProducerTypeEnum.CJ_ENM,
-      // ProducerTypeEnum.EMK_MUSICAL_COMPANY,
-      // ProducerTypeEnum.MUSIC_OF_THE_NIGHT,
-      // ProducerTypeEnum.ORCHARD_MUSICAL,
-      // ProducerTypeEnum.SEENSEE_COMPANY,
-      // ProducerTypeEnum.SHOW_NOTE,
-    ];
+  public async execute(): Promise<PostScrapingData> {
+    // const producers = [
+    //   ProducerTypeEnum.OD_COMPANY,
+    //   // ProducerTypeEnum.CJ_ENM,
+    //   // ProducerTypeEnum.EMK_MUSICAL_COMPANY,
+    //   // ProducerTypeEnum.MUSIC_OF_THE_NIGHT,
+    //   // ProducerTypeEnum.ORCHARD_MUSICAL,
+    //   // ProducerTypeEnum.SEENSEE_COMPANY,
+    //   // ProducerTypeEnum.SHOW_NOTE,
+    // ];
     try {
-      const results = [];
-      const cookies = await this.instargramLoginpage.start();
+      // const cookies = await this.instargramLoginpage.login();
+      const cookies = 'cookies';
+      const scrapingData = await this.instargramApiRequest.doScraping(
+        this.producer,
+        cookies,
+      );
 
-      for (const producer of producers) {
-        const data = await this.instagramPostScraping.doScraping(
-          producer,
-          cookies,
-        );
-
-        const result = {
-          producer,
-          data,
-        };
-        results.push(result);
-      }
-
-      return results;
+      const result = this.odCompanyParser.parse({
+        data: JSON.stringify(scrapingData),
+      });
+      console.log(result);
+      return result;
     } catch (ex) {
       this.logger.error(ex);
     }

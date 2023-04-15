@@ -1,13 +1,21 @@
+import { ProducerTypeEnum } from '@lib/common/type/types';
 import fetch from 'node-fetch';
 
 export class InstargramApiRequest {
-  public async doScraping(producer: string, cookies: string): Promise<any> {
+  public async doScraping(
+    producer: ProducerTypeEnum,
+    cookies: string,
+  ): Promise<any> {
+    const cookie =
+      'ig_nrcb=1; mid=ZDJ0pwAEAAG14kSgPJBz1MruEcN8; dpr=2; ig_did=15B4A66A-EBA7-407C-9D42-E97D87FCB831; csrftoken=fTQiUocMsCtpquIBBmHjdppGMNouaDNg; ds_user_id=47347622548; datr=rXQyZDB-ID9zeu00cwPIw9Eg; shbid="8204\\05447347622548\\0541713096981:01f74c57dc0daf19c97a10ccef489ebc56af5de28f6d1bac94dd5cc8ff5b2b46aa26f675"; shbts="1681560981\\05447347622548\\0541713096981:01f7df99985b21faaeef08b1ec1731ee5f5f8f9d21be30b58af9eb01c7c50634ff7a852a"; sessionid=47347622548%3As85dQdIYKp1dgh%3A10%3AAYdnIbdQji9p6BCmoPNC4lQ5M8OpQlHpPnt9wBlA8Q; rur="NAO\\05447347622548\\0541713104170:01f7ca8c497158e81b8b916729d350fc121d4a7f3ffd2b3e3b5c8eba1214560c6a6a8ab3"';
     try {
       const res = await fetch(
-        `https://www.instagram.com/api/v1/feed/user/${producer}/username/?count=${1}`,
+        `https://www.instagram.com/api/v1/feed/user/${producer}/username/?count=${15}`,
         {
+          method: 'GET',
           headers: {
             accept: '*/*',
+            cookie: cookie,
             'accept-language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
             'sec-ch-prefers-color-scheme': 'light',
             'sec-ch-ua':
@@ -25,12 +33,7 @@ export class InstargramApiRequest {
               'hmac.AR3-BBmF-aRATRvgivHZSbngJd0PqWUX8rncXekOIPx9_Ggu',
             'x-instagram-ajax': '1006637181',
             'x-requested-with': 'XMLHttpRequest',
-            cookie: cookies,
-            Referer: 'https://www.instagram.com/od_musical/',
-            'Referrer-Policy': 'strict-origin-when-cross-origin',
           },
-          body: null,
-          method: 'GET',
         },
       );
       return await res.json();

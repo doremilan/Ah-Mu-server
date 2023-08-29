@@ -5,6 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
 import { InternalScrapingModule } from '@lib/internal-scraping';
 import { InstargramLoginPage } from '@lib/internal-scraping/scraping/login/login.page';
+import { InstargramParser } from '@lib/internal-scraping/parser/instargram-parser';
 
 jest.setTimeout(1000 * 60 * 60);
 
@@ -25,8 +26,10 @@ describe('Instargram scraping test', () => {
   });
 
   it('로그인 테스트 브라우저 방식', async () => {
-    const executor = new PageExecutor(new InstargramLoginPage());
+    const executor = new PageExecutor(
+      new InstargramLoginPage(),
+      new InstargramParser(),
+    );
     const res = await executor.execute();
-    console.log(res);
   });
 });

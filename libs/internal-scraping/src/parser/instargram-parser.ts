@@ -1,6 +1,7 @@
 export interface InstargramScrapingData {
   agency: string;
   text: string;
+  title: string;
   imageUrl: string;
 }
 
@@ -8,6 +9,13 @@ export interface ImageData {
   height: number;
   url: string;
   width: number;
+}
+
+export enum AgencyEnum {
+  EMK = 'EMK뮤지컬컴퍼니',
+  CJ_ENM = 'CJ ENM MUSICAL 씨뮤',
+  PHANTOM = '뮤지컬 오페라의 유령',
+  SEENSEE = '신시컴퍼니',
 }
 
 export class InstargramParser {
@@ -25,8 +33,9 @@ export class InstargramParser {
       const imageList = data.image_versions2.candidates;
 
       const imageUrl = this.extractBiggestImage(imageList);
+      const title = this.extractTitle(text);
 
-      return { agency, text, imageUrl };
+      return { agency, text, title, imageUrl };
     });
 
     const targets = datas.filter((item) => {
@@ -44,5 +53,16 @@ export class InstargramParser {
     });
 
     return biggestImage.url;
+  }
+
+  private extractTitle(text: string): string {
+    const lines = text.split('\n');
+    const title = lines[0];
+
+    if (title.includes('⠀') || title.includes('#')) {
+      return lines[1];
+    }
+
+    return title;
   }
 }

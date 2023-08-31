@@ -21,7 +21,7 @@ export class PageExecutor implements Executor<null> {
       const musicalInfos = await this.instargramLoginpage.start();
 
       const results = this.instargramParser.parse(musicalInfos);
-
+      console.log(results);
       return;
     } catch (ex) {
       console.log(ex);

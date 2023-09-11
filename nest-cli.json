@@ -44,6 +44,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
+    },
+    "domain-mysql": {
+      "type": "library",
+      "root": "libs/domain-mysql",
+      "entryFile": "index",
+      "sourceRoot": "libs/domain-mysql/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/domain-mysql/tsconfig.lib.json"
+      }
     }
   }
 }

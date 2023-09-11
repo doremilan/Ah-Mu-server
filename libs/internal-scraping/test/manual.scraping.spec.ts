@@ -1,6 +1,5 @@
 import { PageExecutor } from '@lib/internal-scraping/executor/page-executor';
 import { INestApplication } from '@nestjs/common';
-import { LoggerFactory } from '@lib/common/logger/logger.factory';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
 import { InternalScrapingModule } from '@lib/internal-scraping';
@@ -11,7 +10,6 @@ jest.setTimeout(1000 * 60 * 60);
 
 describe('Instargram scraping test', () => {
   let app: INestApplication;
-  const logger = LoggerFactory.getInstance();
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -22,6 +20,7 @@ describe('Instargram scraping test', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+
     await app.init();
   });
 
@@ -30,6 +29,7 @@ describe('Instargram scraping test', () => {
       new InstargramLoginPage(),
       new InstargramParser(),
     );
+
     const res = await executor.execute();
   });
 });

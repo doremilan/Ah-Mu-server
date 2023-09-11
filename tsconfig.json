@@ -22,7 +22,9 @@
       "@lib/internal-scraping": ["libs/internal-scraping/src"],
       "@lib/internal-scraping/*": ["libs/internal-scraping/src/*"],
       "@lib/common": ["libs/common/src"],
-      "@lib/common/*": ["libs/common/src/*"]
+      "@lib/common/*": ["libs/common/src/*"],
+      "@lib/domain-mysql": ["libs/domain-mysql/src"],
+      "@lib/domain-mysql/*": ["libs/domain-mysql/src/*"]
     }
   }
 }

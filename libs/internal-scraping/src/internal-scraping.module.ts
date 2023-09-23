@@ -15,13 +15,17 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { OrmModule } from '@lib/domain-mysql/orm/orm.module';
 import { InternalScrapingService } from './internal-scraping.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { DomainMysqlModule } from '@lib/domain-mysql';
 
 @Module({})
 export class InternalScrapingModule {
   static register(allowGlobalContext = false): DynamicModule {
     return {
       module: InternalScrapingModule,
-      imports: [ConfigModule.forRoot({ isGlobal: true }), OrmModule],
+      imports: [
+        ConfigModule.forRoot({ isGlobal: true }),
+        DomainMysqlModule.register(),
+      ],
       providers: [InternalScrapingService, ConfigService],
     };
   }

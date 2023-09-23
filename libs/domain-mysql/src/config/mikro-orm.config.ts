@@ -1,11 +1,12 @@
 import { Logger } from '@nestjs/common';
 import { Options } from '@mikro-orm/core';
 import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
-import { ProductSalesAnalysis } from '@lib/domain-mysql/entity/product-sales-analysis';
+import { Member } from '@lib/domain-mysql/entity/member';
+import { BaseEntity } from '../entity/base.entity';
 
 const logger = new Logger('MikroORM');
 const ormConfig: Options = {
-  entities: [ProductSalesAnalysis],
+  entities: [Member, BaseEntity],
   dbName: process.env.DOMAIN_MYSQL_DB,
   type: process.env.DOMAIN_MYSQL_TYPE as
     | 'mongo'
